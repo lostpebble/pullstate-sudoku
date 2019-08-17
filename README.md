@@ -4,4 +4,6 @@ Made with `create-react-app`.
 
 Run `yarn` and then `yarn start` to see it in action.
 
-![Pullstate Sudoku Screenshot](https://raw.githubusercontent.com/lostpebble/pullstate-sudoku/master/pullstate-sudoku.png)
+<p align="center">
+  <img src="https://github.com/lostpebble/pullstate-sudoku/raw/master/pullstate-sudoku.png" alt="Pullstate" />
+</p>
