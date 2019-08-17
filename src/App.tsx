@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { PreStartComponent } from "./components/PreStartComponent";
+import { PuzzleActions, PuzzleStore } from "./store/PuzzleStore";
+import { useStoreStateOpt } from "pullstate";
+import { PuzzleComponent } from "./components/PuzzleComponent";
+import { Button } from "@material-ui/core";
 
 const App: React.FC = () => {
+  const [started] = useStoreStateOpt(PuzzleStore, [["startedPuzzle"]]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {started && (
+        <>
+          <Button onClick={() => PuzzleStore.update(s => {
+            s.startedPuzzle = false;
+          })} className={"restart-button"} variant="contained" color="primary">
+            Restart
+          </Button>
+          <div className={"space"} />
+        </>
+      )}
+      {!started && <PreStartComponent />}
+      {started && <PuzzleComponent />}
     </div>
   );
-}
+};
+
+setTimeout(() => {
+  PuzzleActions.generateNewSudoku("easy");
+}, 100);
 
 export default App;
