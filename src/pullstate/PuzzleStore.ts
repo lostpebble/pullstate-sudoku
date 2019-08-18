@@ -21,7 +21,6 @@ export const PuzzleStore = new Store<IPuzzleStore>({
 const patchesFilter = createPatchesPathsFilter([["filledBlocks", "*"]]);
 
 PuzzleStore.listenToPatches((patches: Patch[], inversePatches: Patch[]) => {
-  console.log(patches.map(p => p.path.join(".")).join(" ___ "));
   const filteredPatches = patchesFilter(patches);
 
   if (filteredPatches.length > 0) {
@@ -41,6 +40,7 @@ PuzzleStore.createReaction(
       const solvedBoardString = sudoku.solve(boardString);
 
       if (solvedBoardString) {
+        console.log(`Avert your eyes! - The solved Sudoku:`)
         sudoku.print_board(solvedBoardString);
       }
 

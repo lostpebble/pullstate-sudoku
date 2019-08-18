@@ -92,8 +92,4 @@ const App: React.FC = () => {
   );
 };
 
-setTimeout(() => {
-  PuzzleActions.generateNewSudoku("easy");
-}, 100);
-
 export default App;
