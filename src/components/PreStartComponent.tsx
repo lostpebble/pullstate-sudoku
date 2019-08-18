@@ -1,10 +1,11 @@
-import { Button, Container } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import React from "react";
 import { PuzzleActions } from "../store/PuzzleStore";
+import { Grid } from "./Grid";
 
 export const PreStartComponent = () => {
   return (
-    <Container className={"pre-start"}>
+    <Grid justifyItems={"center"} gap={1}>
       <Button
         variant="contained"
         color="primary"
@@ -29,6 +30,6 @@ export const PreStartComponent = () => {
         }}>
         Hard
       </Button>
-    </Container>
+    </Grid>
   );
 };

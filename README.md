@@ -1,6 +1,8 @@
 # Pullstate Sudoku
 
-Made with `create-react-app`.
+An example app using [Pullstate](https://github.com/lostpebble/pullstate) and React.
+
+Made with `create-react-app` and Material-UI for quick UI things.
 
 Run `yarn` and then `yarn start` to see it in action.
 

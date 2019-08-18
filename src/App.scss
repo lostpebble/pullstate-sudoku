@@ -14,14 +14,6 @@
   }
 }
 
-.space {
-  padding: 1em;
-}
-
-.pre-start > button {
-  margin: 0.5em;
-}
-
 .puzzle-container {
   border-radius: 0.2em;
   overflow: hidden;
@@ -51,6 +43,11 @@
       }
 
       input {
+        &::-webkit-inner-spin-button, &::-webkit-outer-spin-button {
+          margin: 0;
+          appearance: none;
+        }
+
         color: #3175bb;
         text-align: center;
         font-size: 1.5em;

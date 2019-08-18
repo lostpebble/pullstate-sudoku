@@ -35,13 +35,13 @@ export const Cell = ({ x, y }: ICellProps) => {
     style.borderTop = borderStyle;
   }
 
-  const wasOriginal = originalFilled !== 0;
-  const filledValue = filledBlock > 0 ? filledBlock : "";
+  const wasOriginal = originalFilled !== ".";
+  const filledValue = filledBlock !== "." ? filledBlock : "";
 
   return (
     <div style={style} className={`cell ${wasOriginal ? `original` : `editable`}`}>
       {!wasOriginal && (
-        <input value={filledValue} onChange={event => PuzzleActions.editCell(x, y, event.target.value)} />
+        <input type={"number"} value={filledValue} onChange={event => PuzzleActions.editCell(x, y, event.target.value)} />
       )}
       {wasOriginal && <span className={`set-value`}>{filledValue}</span>}
     </div>
