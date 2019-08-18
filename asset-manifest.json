@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/pullstate-sudoku/static/css/main.d6b0db4f.chunk.css",
+    "main.js": "/pullstate-sudoku/static/js/main.be739057.chunk.js",
+    "main.js.map": "/pullstate-sudoku/static/js/main.be739057.chunk.js.map",
+    "runtime~main.js": "/pullstate-sudoku/static/js/runtime~main.aabd2685.js",
+    "runtime~main.js.map": "/pullstate-sudoku/static/js/runtime~main.aabd2685.js.map",
+    "static/js/2.51ef9857.chunk.js": "/pullstate-sudoku/static/js/2.51ef9857.chunk.js",
+    "static/js/2.51ef9857.chunk.js.map": "/pullstate-sudoku/static/js/2.51ef9857.chunk.js.map",
+    "index.html": "/pullstate-sudoku/index.html",
+    "precache-manifest.a8a4fb3b6d605dd04be18517dac8c304.js": "/pullstate-sudoku/precache-manifest.a8a4fb3b6d605dd04be18517dac8c304.js",
+    "service-worker.js": "/pullstate-sudoku/service-worker.js",
+    "static/css/main.d6b0db4f.chunk.css.map": "/pullstate-sudoku/static/css/main.d6b0db4f.chunk.css.map"
+  }
+}
