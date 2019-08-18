@@ -1,5 +1,7 @@
 # Pullstate Sudoku
 
+See live example here: https://lostpebble.github.io/pullstate-sudoku/
+
 An example app using [Pullstate](https://github.com/lostpebble/pullstate) and React.
 
 Made with `create-react-app` and Material-UI for quick UI things.
