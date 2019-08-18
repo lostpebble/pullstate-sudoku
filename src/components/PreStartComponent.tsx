@@ -1,7 +1,7 @@
 import { Button } from "@material-ui/core";
 import React from "react";
-import { PuzzleActions } from "../store/PuzzleStore";
 import { Grid } from "./Grid";
+import { PuzzleActions } from "../pullstate/PuzzleStore";
 
 export const PreStartComponent = () => {
   return (

@@ -1,6 +1,8 @@
 import { Store } from "pullstate";
 import sudoku from "sudoku-umd";
 import { Patch } from "immer";
+import { createPatchesPathsFilter } from "../util";
+import { PuzzleUndoRedo } from "./PuzzleUndoRedo";
 
 interface IPuzzleStore {
   startedPuzzle: boolean;
@@ -16,42 +18,17 @@ export const PuzzleStore = new Store<IPuzzleStore>({
   originalFilledBlocks: [],
 });
 
-// PATCH LISTENER / UNDO / REDO
+const patchesFilter = createPatchesPathsFilter([["filledBlocks", "*"]]);
 
-let changes: Patch[][] = [];
-let reverseChanges: Patch[][] = [];
-let offset = 0;
+PuzzleStore.listenToPatches((patches: Patch[], inversePatches: Patch[]) => {
+  console.log(patches.map(p => p.path.join(".")).join(" ___ "));
+  const filteredPatches = patchesFilter(patches);
 
-PuzzleStore.listenToPatches((patches, inversePatches) => {
-  const targetIndex = reverseChanges.length - offset;
-  offset = 0;
-
-  if (targetIndex >= 0) {
-    changes = changes.slice(0, targetIndex);
-    reverseChanges = reverseChanges.slice(0, targetIndex);
+  if (filteredPatches.length > 0) {
+    const filteredInversePatches = patchesFilter(inversePatches);
+    PuzzleUndoRedo.usePatchesForUndoRedo(filteredPatches, filteredInversePatches);
   }
-
-  changes.push(patches);
-  reverseChanges.push(inversePatches);
 });
-
-function undo() {
-  const targetIndex = (reverseChanges.length - 1) - offset;
-
-  if (targetIndex >= 0 && reverseChanges[targetIndex]) {
-    offset += 1;
-    PuzzleStore.applyPatches(reverseChanges[targetIndex]);
-  }
-}
-
-function redo() {
-  const targetIndex = changes.length - offset;
-
-  if (targetIndex >= 0 && changes[targetIndex]) {
-    offset -= 1;
-    PuzzleStore.applyPatches(changes[targetIndex]);
-  }
-}
 
 // REACTIONS
 
@@ -67,9 +44,7 @@ PuzzleStore.createReaction(
         sudoku.print_board(solvedBoardString);
       }
 
-      if (boardString === solvedBoardString) {
-        s.finishedPuzzle = true;
-      }
+      s.finishedPuzzle = boardString === solvedBoardString;
     }
   }
 );
@@ -101,9 +76,28 @@ function editCell(x: number, y: number, value: string) {
   }
 }
 
+function reset() {
+  PuzzleUndoRedo.reset();
+  PuzzleStore.update(s => {
+    s.startedPuzzle = false;
+    s.finishedPuzzle = false;
+  });
+}
+
+function clearBoard() {
+  PuzzleStore.update((s, o) => {
+    // @ts-ignore
+    for (const [y, row] of o.originalFilledBlocks.entries()) {
+      for (const [x, cell] of row.entries()) {
+        s.filledBlocks[y][x] = cell;
+      }
+    }
+  }, PuzzleUndoRedo.usePatchesForUndoRedo);
+}
+
 export const PuzzleActions = {
   generateNewSudoku,
   editCell,
-  undo,
-  redo,
+  reset,
+  clearBoard
 };

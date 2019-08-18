@@ -1,6 +1,6 @@
 import React, { CSSProperties } from "react";
 import { useStoreStateOpt } from "pullstate";
-import { PuzzleActions, PuzzleStore } from "../store/PuzzleStore";
+import { PuzzleActions, PuzzleStore } from "../pullstate/PuzzleStore";
 
 export interface ICellProps {
   x: number;

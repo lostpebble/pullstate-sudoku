@@ -1,3 +1,5 @@
+import { Patch } from "immer";
+
 export const createFilled2DArray = <T extends any = any>(
   width: number,
   height: number,
@@ -15,3 +17,16 @@ export const createFilled2DArray = <T extends any = any>(
 
   return arr;
 };
+
+export function createPatchesPathsFilter(paths: string[][]) {
+  return (patches: Patch[]): Patch[] => {
+    return patches.filter(patch =>
+      paths.some(path =>
+        path.every((part, index) => patch.path.length > index && (patch.path[index] === part || part === "*"))
+      )
+    );
+  };
+}
+
+/*// path.every((part, index) => patch.path.length > index && (patch.path[index] === part || part === "*"))
+        // patch.path.every((part, index) => path.length > index && path[index] === part)*/

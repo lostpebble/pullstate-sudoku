@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import { PreStartComponent } from "./components/PreStartComponent";
-import { PuzzleActions, PuzzleStore } from "./store/PuzzleStore";
 import { useStoreStateOpt } from "pullstate";
 import { PuzzleComponent } from "./components/PuzzleComponent";
 import { Button, Chip } from "@material-ui/core";
@@ -9,6 +8,8 @@ import confetti from "canvas-confetti";
 import { Grid } from "./components/Grid";
 import { useWindowSize } from "./hooks/useWindowSize";
 import { GithubCircle } from "mdi-material-ui"
+import { PuzzleActions, PuzzleStore } from "./pullstate/PuzzleStore";
+import { PuzzleUndoRedo } from "./pullstate/PuzzleUndoRedo";
 
 function runFireworks() {
   const end = Date.now() + 15 * 1000;
@@ -56,23 +57,21 @@ const App: React.FC = () => {
       {started && (
         <Grid direction={"column"} gap={1}>
           <Button
-            onClick={() =>
-              PuzzleStore.update(s => {
-                s.startedPuzzle = false;
-                s.finishedPuzzle = false;
-              })
-            }
+            onClick={PuzzleActions.reset}
             variant="contained"
             color="primary">
             Start New Puzzle
           </Button>
           <PuzzleComponent />
           <Grid direction={"row"} gap={1}>
-            <Button onClick={PuzzleActions.undo} variant="outlined" color="secondary">
+            <Button onClick={PuzzleUndoRedo.undo} variant="outlined" color="secondary">
               Undo
             </Button>
-            <Button onClick={PuzzleActions.redo} variant="outlined" color="secondary">
+            <Button onClick={PuzzleUndoRedo.redo} variant="outlined" color="secondary">
               Redo
+            </Button>
+            <Button onClick={PuzzleActions.clearBoard} variant="outlined" color="secondary">
+              Clear
             </Button>
           </Grid>
         </Grid>
@@ -85,7 +84,8 @@ const App: React.FC = () => {
           component={"a"}
           color="primary"
           href={`https://github.com/lostpebble/pullstate-sudoku`}
-          label="View the source at github.com/lostpebble/pullstate-sudoku"
+          target={"_blank"}
+          label="lostpebble/pullstate-sudoku"
         />
       </div>
     </div>
