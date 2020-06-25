@@ -37,11 +37,8 @@ function runFireworks() {
 }
 
 const App: React.FC = () => {
-  const [started, finished] = useStoreState(PuzzleStore, (s) => [
-    s.startedPuzzle,
-    s.finishedPuzzle,
-  ]);
-
+  const finished = useStoreState(PuzzleStore, (s) => s.finishedPuzzle);
+  const started = useStoreState(PuzzleStore, (s) => s.startedPuzzle);
   const canUndo = useStoreState(UndoStore, (s) => s.undoStack.length > 0);
   const canRedo = useStoreState(UndoStore, (s) => s.redoStack.length > 0);
 
