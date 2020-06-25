@@ -3,7 +3,10 @@
   font-family: "Roboto", serif;
   text-align: center;
   background: #153250;
-  height: 100vh;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
   width: 100%;
   display: flex;
   align-items: center;
@@ -43,7 +46,8 @@
       }
 
       input {
-        &::-webkit-inner-spin-button, &::-webkit-outer-spin-button {
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
           margin: 0;
           appearance: none;
         }
