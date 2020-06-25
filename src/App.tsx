@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import { PreStartComponent } from "./components/PreStartComponent";
-import { useStoreStateOpt } from "pullstate";
+import { useStoreState } from "pullstate";
 import { PuzzleComponent } from "./components/PuzzleComponent";
 import { Button, Chip } from "@material-ui/core";
 import confetti from "canvas-confetti";
 import { Grid } from "./components/Grid";
 import { useWindowSize } from "./hooks/useWindowSize";
-import { GithubCircle } from "mdi-material-ui"
+import { GithubCircle } from "mdi-material-ui";
 import { PuzzleActions, PuzzleStore } from "./pullstate/PuzzleStore";
-import { PuzzleUndoRedo } from "./pullstate/PuzzleUndoRedo";
+import { PuzzleUndoRedo, UndoStore } from "./pullstate/PuzzleUndoRedo";
 
 function runFireworks() {
   const end = Date.now() + 15 * 1000;
@@ -17,7 +17,7 @@ function runFireworks() {
   // @ts-ignore
   const createdConfetti = confetti.create();
 
-  let interval: NodeJS.Timeout = setInterval(function() {
+  let interval: NodeJS.Timeout = setInterval(function () {
     if (Date.now() > end) {
       return clearInterval(interval);
     }
@@ -37,16 +37,19 @@ function runFireworks() {
 }
 
 const App: React.FC = () => {
-  const [started, finished] = useStoreStateOpt(PuzzleStore, [["startedPuzzle"], ["finishedPuzzle"]]);
+  const [started, finished] = useStoreState(PuzzleStore, (s) => [
+    s.startedPuzzle,
+    s.finishedPuzzle,
+  ]);
 
-  useEffect(
-    () => {
-      if (finished) {
-        runFireworks();
-      }
-    },
-    [finished]
-  );
+  const canUndo = useStoreState(UndoStore, (s) => s.undoStack.length > 0);
+  const canRedo = useStoreState(UndoStore, (s) => s.redoStack.length > 0);
+
+  useEffect(() => {
+    if (finished) {
+      runFireworks();
+    }
+  }, [finished]);
 
   const { width } = useWindowSize();
 
@@ -59,18 +62,33 @@ const App: React.FC = () => {
           <Button
             onClick={PuzzleActions.reset}
             variant="contained"
-            color="primary">
+            color="primary"
+          >
             Start New Puzzle
           </Button>
           <PuzzleComponent />
           <Grid direction={"row"} gap={1}>
-            <Button onClick={PuzzleUndoRedo.undo} variant="outlined" color="secondary">
+            <Button
+              onClick={PuzzleUndoRedo.undo}
+              variant="outlined"
+              color="secondary"
+              disabled={!canUndo}
+            >
               Undo
             </Button>
-            <Button onClick={PuzzleUndoRedo.redo} variant="outlined" color="secondary">
+            <Button
+              onClick={PuzzleUndoRedo.redo}
+              variant="outlined"
+              color="secondary"
+              disabled={!canRedo}
+            >
               Redo
             </Button>
-            <Button onClick={PuzzleActions.clearBoard} variant="outlined" color="secondary">
+            <Button
+              onClick={PuzzleActions.clearBoard}
+              variant="outlined"
+              color="secondary"
+            >
               Clear
             </Button>
           </Grid>
@@ -79,7 +97,7 @@ const App: React.FC = () => {
       {!started && <PreStartComponent />}
       <div style={{ marginTop: "5em" }}>
         <Chip
-          icon={<GithubCircle/>}
+          icon={<GithubCircle />}
           clickable
           component={"a"}
           color="primary"
