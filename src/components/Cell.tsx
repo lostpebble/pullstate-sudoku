@@ -1,5 +1,5 @@
+import { useStoreState } from "pullstate";
 import React, { CSSProperties } from "react";
-import { useStoreStateOpt } from "pullstate";
 import { PuzzleActions, PuzzleStore } from "../pullstate/PuzzleStore";
 
 export interface ICellProps {
@@ -10,10 +10,16 @@ export interface ICellProps {
 const borderStyle = `1px solid #667788`;
 
 export const Cell = ({ x, y }: ICellProps) => {
-  const [filledBlock, originalFilled] = useStoreStateOpt(PuzzleStore, [
-    ["filledBlocks", y, x],
-    ["originalFilledBlocks", y, x],
-  ]);
+  const filledBlock = useStoreState(
+    PuzzleStore,
+    (s) => (s.startedPuzzle ? s.filledBlocks[y][x] : ""),
+    [x, y]
+  );
+  const originalFilled = useStoreState(
+    PuzzleStore,
+    (s) => (s.startedPuzzle ? s.originalFilledBlocks[y][x] : ""),
+    [x, y]
+  );
 
   const style: CSSProperties = {
     userSelect: "none",
@@ -39,9 +45,16 @@ export const Cell = ({ x, y }: ICellProps) => {
   const filledValue = filledBlock !== "." ? filledBlock : "";
 
   return (
-    <div style={style} className={`cell ${wasOriginal ? `original` : `editable`}`}>
+    <div
+      style={style}
+      className={`cell ${wasOriginal ? `original` : `editable`}`}
+    >
       {!wasOriginal && (
-        <input type={"number"} value={filledValue} onChange={event => PuzzleActions.editCell(x, y, event.target.value)} />
+        <input
+          type={"number"}
+          value={filledValue}
+          onChange={(event) => PuzzleActions.editCell(x, y, event.target.value)}
+        />
       )}
       {wasOriginal && <span className={`set-value`}>{filledValue}</span>}
     </div>

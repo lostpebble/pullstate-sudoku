@@ -25,7 +25,7 @@ PuzzleStore.listenToPatches((patches: Patch[], inversePatches: Patch[]) => {
 
   if (filteredPatches.length > 0) {
     const filteredInversePatches = patchesFilter(inversePatches);
-    PuzzleUndoRedo.usePatchesForUndoRedo(filteredPatches, filteredInversePatches);
+    PuzzleUndoRedo.addChanges(filteredPatches, filteredInversePatches);
   }
 });
 
@@ -33,14 +33,14 @@ PuzzleStore.listenToPatches((patches: Patch[], inversePatches: Patch[]) => {
 
 // If our board has changed, check if the user has won the game
 PuzzleStore.createReaction(
-  s => s.filledBlocks,
+  (s) => s.filledBlocks,
   (watched, s, o) => {
     if (o.startedPuzzle && watched.length > 0) {
       const boardString = sudoku.board_grid_to_string(watched);
       const solvedBoardString = sudoku.solve(boardString);
 
       if (solvedBoardString) {
-        console.log(`Avert your eyes! - The solved Sudoku:`)
+        console.log(`Avert your eyes! - The solved Sudoku:`);
         sudoku.print_board(solvedBoardString);
       }
 
@@ -56,7 +56,7 @@ function generateNewSudoku(level: "easy" | "medium" | "hard" | "very-hard") {
   const filledBlocks: string[][] = sudoku.board_string_to_grid(sudokuString);
   const originalFilled: string[][] = sudoku.board_string_to_grid(sudokuString);
 
-  PuzzleStore.update(s => {
+  PuzzleStore.update((s) => {
     s.filledBlocks = filledBlocks;
     s.originalFilledBlocks = originalFilled;
     s.startedPuzzle = true;
@@ -70,7 +70,7 @@ function editCell(x: number, y: number, value: string) {
     if (value === "") {
       value = ".";
     }
-    PuzzleStore.update(s => {
+    PuzzleStore.update((s) => {
       s.filledBlocks[y][x] = value;
     });
   }
@@ -78,7 +78,7 @@ function editCell(x: number, y: number, value: string) {
 
 function reset() {
   PuzzleUndoRedo.reset();
-  PuzzleStore.update(s => {
+  PuzzleStore.update((s) => {
     s.startedPuzzle = false;
     s.finishedPuzzle = false;
   });
@@ -92,12 +92,12 @@ function clearBoard() {
         s.filledBlocks[y][x] = cell;
       }
     }
-  }, PuzzleUndoRedo.usePatchesForUndoRedo);
+  }, PuzzleUndoRedo.addChanges);
 }
 
 export const PuzzleActions = {
   generateNewSudoku,
   editCell,
   reset,
-  clearBoard
+  clearBoard,
 };

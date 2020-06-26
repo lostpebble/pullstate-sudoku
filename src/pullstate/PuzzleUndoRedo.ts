@@ -1,52 +1,51 @@
 import { Patch } from "immer";
 import { PuzzleStore } from "./PuzzleStore";
+import { Store } from "pullstate";
 
 // PATCH LISTENER / UNDO / REDO
+type Change = [Patch[], Patch[]];
+export const UndoStore = new Store({
+  undoStack: [] as Change[],
+  redoStack: [] as Change[],
+});
 
-let changes: Patch[][] = [];
-let reverseChanges: Patch[][] = [];
-let offset = 0;
-
-function usePatchesForUndoRedo(patches: Patch[], inversePatches: Patch[]) {
-  const targetIndex = reverseChanges.length - offset;
-  offset = 0;
-
-  if (targetIndex >= 0) {
-    changes = changes.slice(0, targetIndex);
-    reverseChanges = reverseChanges.slice(0, targetIndex);
-  }
-
-  changes.push(patches);
-  reverseChanges.push(inversePatches);
+function addChanges(patches: Patch[], inversePatches: Patch[]) {
+  UndoStore.update((s) => {
+    s.redoStack = [];
+    s.undoStack.push([patches, inversePatches]);
+  });
 }
 
 function undo() {
-  const targetIndex = (reverseChanges.length - 1) - offset;
-
-  if (targetIndex >= 0 && reverseChanges[targetIndex]) {
-    offset += 1;
-    PuzzleStore.applyPatches(reverseChanges[targetIndex]);
-  }
+  UndoStore.update((s) => {
+    const change = s.undoStack.pop();
+    if (change === undefined) return;
+    const [, inversePatches] = change;
+    s.redoStack.push(change);
+    PuzzleStore.applyPatches(inversePatches);
+  });
 }
 
 function redo() {
-  const targetIndex = changes.length - offset;
-
-  if (targetIndex >= 0 && changes[targetIndex]) {
-    offset -= 1;
-    PuzzleStore.applyPatches(changes[targetIndex]);
-  }
+  UndoStore.update((s) => {
+    const change = s.redoStack.pop();
+    if (change === undefined) return;
+    const [patches] = change;
+    s.undoStack.push(change);
+    PuzzleStore.applyPatches(patches);
+  });
 }
 
 function reset() {
-  changes = [];
-  reverseChanges = [];
-  offset = 0;
+  UndoStore.update((s) => {
+    s.undoStack = [];
+    s.redoStack = [];
+  });
 }
 
 export const PuzzleUndoRedo = {
-  usePatchesForUndoRedo,
+  addChanges,
   undo,
   redo,
-  reset
-}
+  reset,
+};
