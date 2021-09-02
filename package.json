@@ -14,7 +14,7 @@
     "csstype": "^2.6.6",
     "gh-pages": "^2.1.1",
     "hotkeys-js": "^3.6.14",
-    "immer": "^3.2.0",
+    "immer": "^9.0.6",
     "mdi-material-ui": "^6.4.1",
     "pullstate": "^1.15.2",
     "react": "^16.9.0",
